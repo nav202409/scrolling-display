@@ -31,48 +31,53 @@ messages = df[0].dropna().tolist()
 combined_message = "  •  ".join(messages)
 
 # CSS for scrolling
+
 scroll_css = """
 <style>
-/* Universal reset */
-* {
+/* Full black background across all areas, including safe insets */
+html, body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-/* Fullscreen black background */
-html, body {
   height: 100%;
   width: 100%;
   background-color: black;
   overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  position: fixed;
+  inset: 0;
 }
 
-/* Hide Streamlit UI */
+/* Streamlit UI elements hidden */
 #MainMenu, header, footer {
   visibility: hidden;
 }
+
+/* Remove extra padding */
 .block-container {
   padding: 0rem !important;
   margin: 0rem !important;
 }
 
-/* Container that fills the full screen */
+/* Use safe area fill (for iPhones with notch etc) */
+body {
+  padding: env(safe-area-inset);
+  background-color: black;
+}
+
+/* Scrolling container */
 .scroll-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
   background-color: black;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   overflow: hidden;
-  z-index: 9999;
+  position: fixed;
+  inset: 0;
 }
 
-/* Scrolling text */
+/* The scrolling message itself */
 .scroll-text {
   font-size: 10vw;
   font-weight: bold;
@@ -84,7 +89,7 @@ html, body {
 }
 
 @keyframes scroll-left {
-  0% { transform: translateX(0%); }
+  0%   { transform: translateX(0%); }
   100% { transform: translateX(-100%); }
 }
 </style>
@@ -95,8 +100,6 @@ html, body {
 st.markdown(scroll_css, unsafe_allow_html=True)
 st.markdown(f"""
 <div class="scroll-container">
-  <div class="scroll-text">
-    <span>{combined_message}</span>
-  </div>
+  <div class="scroll-text">{combined_message}</div>
 </div>
 """, unsafe_allow_html=True)
