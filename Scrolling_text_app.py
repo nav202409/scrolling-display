@@ -4,11 +4,6 @@ import re
 
 st.set_page_config(layout="centered", page_title="Scrolling Messages", page_icon="📰")
 
-# Auto-refresh every 60 seconds
-#st.markdown("""
-#    <meta http-equiv="refresh" content="60">
-#""", unsafe_allow_html=True)
-
 # Read and parse Google Sheet URL from secrets
 sheet_url = st.secrets["sheet_url"]
 
@@ -30,11 +25,9 @@ messages = df[0].dropna().tolist()
 # Combine messages into one
 combined_message = "  •  ".join(messages)
 
-# CSS for scrolling
-
+# Compatibility-optimized CSS for scrolling
 scroll_css = """
 <style>
-/* Full black background across all areas, including safe insets */
 html, body {
   margin: 0;
   padding: 0;
@@ -42,29 +35,28 @@ html, body {
   width: 100%;
   background-color: black;
   overflow: hidden;
-  -webkit-overflow-scrolling: touch;
-  position: fixed;
-  inset: 0;
+  position: relative;
 }
 
-/* Streamlit UI elements hidden */
-#MainMenu, header, footer {
-  visibility: hidden;
+/* For iOS 11-15 compatibility */
+body {
+  padding: constant(safe-area-inset);
+  padding: env(safe-area-inset);
+  background-color: black;
 }
 
-/* Remove extra padding */
+/* Remove extra spacing around content */
 .block-container {
   padding: 0rem !important;
   margin: 0rem !important;
 }
 
-/* Use safe area fill (for iPhones with notch etc) */
-body {
-  padding: env(safe-area-inset);
-  background-color: black;
+/* Hide Streamlit UI elements */
+#MainMenu, header, footer {
+  visibility: hidden;
 }
 
-/* Scrolling container */
+/* Scrolling container with simplified layout */
 .scroll-container {
   width: 100vw;
   height: 100vh;
@@ -73,21 +65,22 @@ body {
   align-items: center;
   justify-content: flex-start;
   overflow: hidden;
-  position: fixed;
+  position: absolute;
   inset: 0;
 }
 
-/* The scrolling message itself */
+/* Scrolling text with smaller font for older devices */
 .scroll-text {
-  font-size: 10vw;
+  font-size: 6vw;
   font-weight: bold;
   color: white;
   white-space: nowrap;
   display: inline-block;
   padding-left: 100%;
-  animation: scroll-left 20s linear infinite;
+  animation: scroll-left 30s linear infinite;
 }
 
+/* Keyframe animation */
 @keyframes scroll-left {
   0%   { transform: translateX(0%); }
   100% { transform: translateX(-100%); }
@@ -95,8 +88,7 @@ body {
 </style>
 """
 
-
-# Render
+# Render HTML and CSS
 st.markdown(scroll_css, unsafe_allow_html=True)
 st.markdown(f"""
 <div class="scroll-container">
