@@ -5,9 +5,9 @@ import re
 st.set_page_config(layout="centered", page_title="Scrolling Messages", page_icon="📰")
 
 # Auto-refresh every 60 seconds
-st.markdown("""
-    <meta http-equiv="refresh" content="60">
-""", unsafe_allow_html=True)
+#st.markdown("""
+#    <meta http-equiv="refresh" content="60">
+#""", unsafe_allow_html=True)
 
 # Read and parse Google Sheet URL from secrets
 sheet_url = st.secrets["sheet_url"]
